@@ -54,20 +54,25 @@ namespace Asap2
             bool status = false;
             Asap2Scanner scanner;
             Asap2Parser parser;
-            using (var stream = new FileStream(fileName, FileMode.Open))
+
+            using (FileStream fs = File.Open(fileName, FileMode.Open))
             {
-                scanner = new Asap2Scanner(stream, this.errorHandler);
-                parser = new Asap2Parser(scanner, this.errorHandler);
-                try
+                using (BufferedStream bs = new BufferedStream(fs))
                 {
-                    status = parser.Parse();
-                }
-                catch(ParserErrorException e)
-                {
-                    errorHandler.reportError(e.Message);
-                    status = false;
+                    scanner = new Asap2Scanner(bs, this.errorHandler);
+                    parser = new Asap2Parser(scanner, this.errorHandler);
+                    try
+                    {
+                        status = parser.Parse();
+                    }
+                    catch (ParserErrorException e)
+                    {
+                        errorHandler.reportError(e.Message);
+                        status = false;
+                    }
                 }
             }
+
 
             if (status)
             {
