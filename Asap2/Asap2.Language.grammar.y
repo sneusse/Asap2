@@ -95,7 +95,7 @@
 %token <s> RIP_ADDR_WXYZ45
 %token <s> SHIFT_OP_XYZ45
 %token <s> SRC_ADDR_XYZ45
-%token RESERVED
+%token RESERVED_DISTAB_MEMORY
 %token STATIC_RECORD_LAYOUT
 %token BIT_MASK
 %token BIT_OPERATION
@@ -1613,9 +1613,9 @@ record_layout_data
             yywarning(String.Format("Warning: Duplicate '{0}' found, ignoring", $2));
         }
     }
-    | record_layout_data RESERVED NUMBER IDENTIFIER {
+    | record_layout_data RESERVED_DISTAB_MEMORY NUMBER IDENTIFIER {
         $$ = $1;
-        $$.reserved = new RESERVED(location: @$, Position: (UInt64)$3, dataSize: (DataSize)EnumToStringOrAbort(typeof(DataSize), $4));
+        $$.reserved_distab_memory = new RESERVED_DISTAB_MEMORY(location: @$, Position: (UInt64)$3, dataSize: (DataSize)EnumToStringOrAbort(typeof(DataSize), $4));
     }
     | record_layout_data RIP_ADDR_WXYZ45 NUMBER IDENTIFIER {
         $$ = $1;

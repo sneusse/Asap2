@@ -509,9 +509,9 @@ namespace Asap2
     /// Specifies a position in this record layout that shall be ignored (i.e. not interpreted).
     /// </summary>
     [Base(IsSimple = true)]
-    public class RESERVED : Asap2Base
+    public class RESERVED_DISTAB_MEMORY : Asap2Base
     {
-        public RESERVED(Location location, UInt64 Position, DataSize dataSize) : base(location)
+        public RESERVED_DISTAB_MEMORY(Location location, UInt64 Position, DataSize dataSize) : base(location)
         {
             this.Position = Position;
             this.dataSize = dataSize;
@@ -843,7 +843,7 @@ namespace Asap2
         public Dictionary<string, OFFSET_XYZ45> offset_xyz45 = new Dictionary<string, OFFSET_XYZ45>();
 
         [Element(11)]
-        public RESERVED reserved;
+        public RESERVED_DISTAB_MEMORY reserved_distab_memory;
 
         [Element(12)]
         public Dictionary<string, RIP_ADDR_WXYZ45> rip_addr_wxyz45 = new Dictionary<string, RIP_ADDR_WXYZ45>();
