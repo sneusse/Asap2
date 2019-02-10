@@ -12,7 +12,7 @@
 
 Identifier              [A-Za-z_][A-Za-z0-9_\.\[\]]*
 Space                   [ \t\u000c]
-Decimal                 [\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?
+Decimal                 [\-+]?[0-9^\.]*\.?[e|E]?\-?[0-9]*
 HexNumber               0x[0-9A-Fa-f]+
 Eol                     (\r?\n)
 Alignment               ALIGNMENT_[A-Za-z0-9_]+
@@ -179,9 +179,9 @@ A2ML                            { yy_push_state (STATE_A2ML); yylval.sb = new St
 
 "\/include"                     { yy_push_state(STATE_INCL); }
 \"                              { yy_push_state(STATE_STRING); yylval.sb = new StringBuilder(); }
+{Decimal}                       { return MakeNumber(); }
 {Identifier}                    { return Make(Token.IDENTIFIER); }
 {HexNumber}                     { return MakeHexNumber(); }
-{Decimal}                       { return MakeNumber(); }
 
 <STATE_INCL>{
     {Eol}           { yy_pop_state(); TryInclude(null); }

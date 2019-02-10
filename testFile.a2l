@@ -148,7 +148,7 @@ A2ML_VERSION 1 1
         UWORD
         NO_COMPU_METHOD
         0
-        0.0
+        1.e-002
         0.0
         65535.0
         ECU_ADDRESS 0x4000b6ee
