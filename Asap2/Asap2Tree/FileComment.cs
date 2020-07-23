@@ -4,13 +4,14 @@ using System.Text;
 namespace Asap2
 {
     /// <summary>
-    /// Class for holding multi line comments. Use <see cref="Environment.NewLine"/> when adding a new line to the comment.
-    /// Start ('/* ') and end (' */') of the comment block is added by the class. 
+    ///     Class for holding multi line comments. Use <see cref="Environment.NewLine" /> when adding a new line to the
+    ///     comment.
+    ///     Start ('/* ') and end (' */') of the comment block is added by the class.
     /// </summary>
     public class FileComment : Asap2Base
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         /// <param name="comment">First comment line.</param>
         /// <param name="startNewLineWithStar">Indicates if each comment line shall start with a *.</param>
@@ -18,14 +19,14 @@ namespace Asap2
         {
             if (comment != null)
             {
-                this.comment = new StringBuilder();
-                this.comment.Append(comment);
-                this.startNewLineWithStar = startNewLineWithStar;
+                Comment = new StringBuilder();
+                Comment.Append(comment);
+                StartNewLineWithStar = startNewLineWithStar;
             }
         }
 
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         /// <param name="comment">First comment line.</param>
         /// <param name="startNewLineWithStar">Indicates if each comment line shall start with a *.</param>
@@ -33,24 +34,15 @@ namespace Asap2
         {
             if (comment != null)
             {
-                this.comment = new StringBuilder();
-                this.comment.Append(comment);
-                this.startNewLineWithStar = startNewLineWithStar;
+                Comment = new StringBuilder();
+                Comment.Append(comment);
+                StartNewLineWithStar = startNewLineWithStar;
             }
         }
 
-        private StringBuilder comment;
-        public StringBuilder Comment
-        {
-            get { return comment; }
-            set { comment = value; }
-        }
+        public StringBuilder Comment { get; set; }
 
-        private bool startNewLineWithStar;
-        public bool StartNewLineWithStar
-        {
-            get { return startNewLineWithStar; }
-        }
+        public bool StartNewLineWithStar { get; private set; }
 
         public void Append(object value)
         {
@@ -59,17 +51,18 @@ namespace Asap2
 
         public override string ToString()
         {
-            comment.Insert(0, "/* ");
+            Comment.Insert(0, "/* ");
             if (StartNewLineWithStar)
             {
-                comment.Replace(Environment.NewLine, Environment.NewLine + " * ");
-                comment[comment.Length - 1] = '/';
+                Comment.Replace(Environment.NewLine, Environment.NewLine + " * ");
+                Comment[Comment.Length - 1] = '/';
             }
             else
             {
-                comment.Append(" */");
+                Comment.Append(" */");
             }
-            return comment.ToString();
+
+            return Comment.ToString();
         }
     }
 }

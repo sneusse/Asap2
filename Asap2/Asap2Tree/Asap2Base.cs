@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Asap2
 {
     /// <summary>
-    /// Base class for the Asap2Tree.
+    ///     Base class for the Asap2Tree.
     /// </summary>
     public abstract class Asap2Base
     {
         private static ulong orderId;
-
-        public ulong OrderID { get; protected set; }
 
         // Static constructor to initialize the static member, orderId. This
         // constructor is called one time, automatically, before any instance
@@ -27,8 +22,12 @@ namespace Asap2
         public Asap2Base(Location location)
         {
             this.location = location;
-            this.OrderID = GetOrderID();
+            OrderID = GetOrderID();
         }
+
+        public ulong OrderID { get; protected set; }
+
+        public Location location { get; set; }
 
         protected ulong GetOrderID()
         {
@@ -37,34 +36,35 @@ namespace Asap2
             return ++orderId;
         }
 
-        public Location location { get; set; }
-
-        public void reportErrorOrWarning(string message, bool isError, IErrorReporter errorReporter, bool isInfo = false)
+        public void reportErrorOrWarning(string message, bool isError, IErrorReporter errorReporter,
+            bool isInfo = false)
         {
             if (isError)
             {
-                string msg = string.Format("{0} : Line: {1} : Row: {2} : ValidationError : {3}", location.FileName, location.StartLine, location.StartColumn, message);
+                var msg = string.Format("{0} : Line: {1} : Row: {2} : ValidationError : {3}", location.FileName,
+                    location.StartLine, location.StartColumn, message);
                 errorReporter.reportError(msg);
                 throw new ValidationErrorException(msg);
             }
-            else if (isInfo)
-            {
-                errorReporter.reportInformation(string.Format("{0} : Line: {1} : Row: {2} : ValidationInformation : {3}", location.FileName, location.StartLine, location.StartColumn, message));
-            }
-            else
-            {
-                errorReporter.reportWarning(string.Format("{0} : Line: {1} : Row: {2} : ValidationWarning : {3}", location.FileName, location.StartLine, location.StartColumn, message));
-            }
 
+            if (isInfo)
+                errorReporter.reportInformation(string.Format(
+                    "{0} : Line: {1} : Row: {2} : ValidationInformation : {3}", location.FileName, location.StartLine,
+                    location.StartColumn, message));
+            else
+                errorReporter.reportWarning(string.Format("{0} : Line: {1} : Row: {2} : ValidationWarning : {3}",
+                    location.FileName, location.StartLine, location.StartColumn, message));
         }
 
         #region ValidateIdentifier
 
-        static string IdentifierPattern = @"[A-Za-z_][A-Za-z0-9_]*(\[[A-Za-z0-9_]*\])*";
-        static Regex IdentifierRgx = new Regex(IdentifierPattern, RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly string IdentifierPattern = @"[A-Za-z_][A-Za-z0-9_]*(\[[A-Za-z0-9_]*\])*";
+
+        private static readonly Regex IdentifierRgx =
+            new Regex(IdentifierPattern, RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         /// <summary>
-        /// Validates the provided identifier according to the rules.
+        ///     Validates the provided identifier according to the rules.
         /// </summary>
         /// <param name="Identifier">Identifier to validate.</param>
         /// <param name="errorReporter">Error reporter to use.</param>
@@ -78,14 +78,17 @@ namespace Asap2
                 errorReporter.reportError(tmp);
                 throw new ValidationErrorException(tmp);
             }
-            else if ((splitted.Length == 1) && (splitted[0].Length > 128))
+
+            if (splitted.Length == 1 && splitted[0].Length > 128)
             {
-                var tmp = string.Format("Identifier '{0}' is not a valid identifier, is longer than 128  (MAX_PARTIAL_IDENT).", Identifier);
+                var tmp = string.Format(
+                    "Identifier '{0}' is not a valid identifier, is longer than 128  (MAX_PARTIAL_IDENT).", Identifier);
                 errorReporter.reportWarning(tmp);
             }
-            else if ((splitted.Length > 1) && (Identifier.Length > 1024))
+            else if (splitted.Length > 1 && Identifier.Length > 1024)
             {
-                var tmp = string.Format("Identifier '{0}' is not a valid identifier, is longer than 1024 (MAX_IDENT).", Identifier);
+                var tmp = string.Format("Identifier '{0}' is not a valid identifier, is longer than 1024 (MAX_IDENT).",
+                    Identifier);
                 errorReporter.reportWarning(tmp);
             }
 
@@ -93,25 +96,29 @@ namespace Asap2
             {
                 if (line.Length > 128)
                 {
-                    var tmp = string.Format("Part '{0}' of Identifier '{1}' is not a valid identifier, the part is longer than 128 (MAX_PARTIAL_IDENT)", line, Identifier);
+                    var tmp = string.Format(
+                        "Part '{0}' of Identifier '{1}' is not a valid identifier, the part is longer than 128 (MAX_PARTIAL_IDENT)",
+                        line, Identifier);
                     errorReporter.reportWarning(tmp);
                 }
 
-                MatchCollection matches = IdentifierRgx.Matches(line);
+                var matches = IdentifierRgx.Matches(line);
 
                 if (matches.Count == 0)
                 {
-                    var tmp = string.Format("Part '{0}' of Identifier '{1}' is not a valid identifier", line, Identifier);
+                    var tmp = string.Format("Part '{0}' of Identifier '{1}' is not a valid identifier", line,
+                        Identifier);
                     errorReporter.reportError(tmp);
                     throw new ValidationErrorException(tmp);
                 }
             }
         }
-#endregion
+
+        #endregion
     }
 
     /// <summary>
-    /// Data types defined by the standard.
+    ///     Data types defined by the standard.
     /// </summary>
     public enum DataType
     {
@@ -128,13 +135,13 @@ namespace Asap2
     }
 
     /// <summary>
-    /// Data sizes defined by the standard.
+    ///     Data sizes defined by the standard.
     /// </summary>
     public enum DataSize
     {
         BYTE,
         WORD,
-        LONG,
+        LONG
     }
 
     public enum AddrType
@@ -148,17 +155,18 @@ namespace Asap2
     public enum IndexOrder
     {
         /// <summary>
-        /// Increasing index with increasing address.
+        ///     Increasing index with increasing address.
         /// </summary>
         INDEX_INCR,
+
         /// <summary>
-        /// Decreasing index with increasing address.
+        ///     Decreasing index with increasing address.
         /// </summary>
-        INDEX_DECR,
+        INDEX_DECR
     }
 
     /// <summary>
-    /// Conversion types used by CHARACTERISTICs and MEASUREMENT.
+    ///     Conversion types used by CHARACTERISTICs and MEASUREMENT.
     /// </summary>
     public enum ConversionType
     {
@@ -168,32 +176,41 @@ namespace Asap2
         RAT_FUNC,
         TAB_INTP,
         TAB_NOINTP,
-        TAB_VERB,
+        TAB_VERB
     }
 
-    [Serializable()]
-    public class ValidationErrorException : System.Exception
+    [Serializable]
+    public class ValidationErrorException : Exception
     {
-        public ValidationErrorException() : base() { }
-        public ValidationErrorException(string message) : base(message) { }
-        public ValidationErrorException(string message, System.Exception inner) : base(message, inner) { }
+        public ValidationErrorException()
+        {
+        }
+
+        public ValidationErrorException(string message) : base(message)
+        {
+        }
+
+        public ValidationErrorException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+        // A constructor is needed for serialization when an
+        // exception propagates from a remoting server to the client. 
+        protected ValidationErrorException(SerializationInfo info,
+            StreamingContext context)
+        {
+        }
 
         public override string ToString()
         {
             return base.Message;
         }
-
-        // A constructor is needed for serialization when an
-        // exception propagates from a remoting server to the client. 
-        protected ValidationErrorException(System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context)
-        { }
     }
 
-    interface IValidator
+    internal interface IValidator
     {
         /// <summary>
-        /// Validates the class contents according to the requirement rules.
+        ///     Validates the class contents according to the requirement rules.
         /// </summary>
         /// <exception cref="ValidationErrorException">Fatal validation error.</exception>
         void Validate(IErrorReporter errorReporter);
@@ -201,9 +218,9 @@ namespace Asap2
 
     public interface IAxisPtsCharacteristicMeasurement
     {
-        String GetName();
-        UInt64 GetEcuAddress();
-        void SetEcuAddress(UInt64 address);
+        string GetName();
+        ulong GetEcuAddress();
+        void SetEcuAddress(ulong address);
         ulong orderID();
     }
 }

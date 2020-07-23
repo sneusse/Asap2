@@ -4,11 +4,11 @@ namespace Asap2.Tests
 {
     public class UnitTestErrorReporter : IErrorReporter
     {
-        private readonly List<string> warnings = new List<string>();
         private readonly List<string> errors = new List<string>();
         private readonly List<string> information = new List<string>();
+        private readonly List<string> warnings = new List<string>();
 
-        public IReadOnlyList<string> Warnings 
+        public IReadOnlyList<string> Warnings
         {
             get { return warnings; }
         }

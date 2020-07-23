@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asap2
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class BaseAttribute : Attribute
     {
         // Private fields.
         private bool isSimple;
-        private string ObsoleteMsg;
 
         public BaseAttribute()
         {
-            this.isSimple = false;
+            isSimple = false;
         }
 
         /// <summary>
-        /// Is this a simple type that shall not start with /begin. Default is complex type that starts with /begin.
+        ///     Is this a simple type that shall not start with /begin. Default is complex type that starts with /begin.
         /// </summary>
         public virtual bool IsSimple
         {
@@ -28,47 +23,42 @@ namespace Asap2
         }
 
         /// <summary>
-        /// This type is Obsolete if this string is populated with a obsolete message.
+        ///     This type is Obsolete if this string is populated with a obsolete message.
         /// </summary>
-        public virtual string IsObsolete
-        {
-            get { return ObsoleteMsg; }
-            set { ObsoleteMsg = value; }
-        }
+        public virtual string IsObsolete { get; set; }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.All)]
     public class ElementAttribute : Attribute
     {
-        // Private fields.
-        private string name;
-        private uint sortOrder;
-        private string comment;
-        private bool isName;
+        private bool codeAsHex;
+        private bool forceNewLine;
         private bool isArgument;
-        private bool isString;
         private bool isComment;
         private bool isDictionary;
         private bool isList;
-        private bool forceNewLine;
-        private bool codeAsHex;
-        private string ObsoleteMsg;
+        private bool isName;
+
+        private bool isString;
+
+        // Private fields.
+        private readonly uint sortOrder;
 
         public ElementAttribute(uint SortOrder)
         {
-            this.sortOrder = SortOrder;
-            this.isName = false;
-            this.isArgument = false;
-            this.isString = false;
-            this.isComment = false;
-            this.isDictionary = false;
-            this.isList = false;
-            this.forceNewLine = false;
-            this.codeAsHex = false;
+            sortOrder = SortOrder;
+            isName = false;
+            isArgument = false;
+            isString = false;
+            isComment = false;
+            isDictionary = false;
+            isList = false;
+            forceNewLine = false;
+            codeAsHex = false;
         }
 
         /// <summary>
-        /// Name for the element. Replaces class name as element name.
+        ///     Name for the element. Replaces class name as element name.
         /// </summary>
         public virtual bool IsName
         {
@@ -77,7 +67,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Is this an argument of an element.
+        ///     Is this an argument of an element.
         /// </summary>
         public virtual bool IsArgument
         {
@@ -86,7 +76,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Is this a long argument of an element of string type.
+        ///     Is this a long argument of an element of string type.
         /// </summary>
         public virtual bool IsString
         {
@@ -95,7 +85,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Is comment in an element.
+        ///     Is comment in an element.
         /// </summary>
         public virtual bool IsComment
         {
@@ -105,7 +95,7 @@ namespace Asap2
 
 
         /// <summary>
-        /// Is a dictionary of type Dictionary&lt;string, object&gt;
+        ///     Is a dictionary of type Dictionary&lt;string, object&gt;
         /// </summary>
         public virtual bool IsDictionary
         {
@@ -114,7 +104,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Is a list of type List&lt;object&gt;. Object is a new node or simple data that can be fetched whith ToString().
+        ///     Is a list of type List&lt;object&gt;. Object is a new node or simple data that can be fetched whith ToString().
         /// </summary>
         public virtual bool IsList
         {
@@ -123,7 +113,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Force extra newline before this element.
+        ///     Force extra newline before this element.
         /// </summary>
         public virtual bool ForceNewLine
         {
@@ -132,7 +122,7 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Code this element as hex.
+        ///     Code this element as hex.
         /// </summary>
         public virtual bool CodeAsHex
         {
@@ -141,16 +131,12 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Override serialization name.
+        ///     Override serialization name.
         /// </summary>
-        public virtual string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public virtual string Name { get; set; }
 
         /// <summary>
-        /// Set serialization sortorder.
+        ///     Set serialization sortorder.
         /// </summary>
         public virtual uint SortOrder
         {
@@ -158,21 +144,13 @@ namespace Asap2
         }
 
         /// <summary>
-        /// Optional comment.
+        ///     Optional comment.
         /// </summary>
-        public virtual string Comment
-        {
-            get { return comment; }
-            set { comment = value; }
-        }
+        public virtual string Comment { get; set; }
 
         /// <summary>
-        /// This parameter is obsolete if this string is populated with a obsolete message.
+        ///     This parameter is obsolete if this string is populated with a obsolete message.
         /// </summary>
-        public virtual string IsObsolete
-        {
-            get { return ObsoleteMsg; }
-            set { ObsoleteMsg = value; }
-        }
+        public virtual string IsObsolete { get; set; }
     }
 }
